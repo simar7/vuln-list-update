@@ -35,6 +35,7 @@ jobs:
 
       - name: NVD
         run: ./vuln-list-update -target nvd
+        continue-on-error: true
 
       - name: B O G U S   T A R G E T
         run: ./vuln-list-update -target bogus
