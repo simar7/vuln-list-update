@@ -1,12 +1,15 @@
 name: Update vuln-list repo
-on:
+on: [push, pull_request]
   schedule:
   - cron: "0 0,12 * * *"
+  watch:
+    types: [started]
 
 jobs:
   update:
     name: Update repo vuln-list
     runs-on: ubuntu-latest
+    continue-on-error: true
     env:
       GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
     steps:
@@ -32,6 +35,9 @@ jobs:
 
     - name: NVD
       run: ./vuln-list-update -target nvd
+
+    - name: B O G U S   T A R G E T
+      run: ./vuln-list-update -target bogus
 
     - name: Alpine Issue Tracker
       run: ./vuln-list-update -target alpine
