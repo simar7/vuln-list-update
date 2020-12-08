@@ -49,6 +49,6 @@ jobs:
         continue-on-error: true
 
       - name: Check on failures
-        if: steps.nvd.outputs.status == 'failure' || steps.bogus.outputs.status == 'failure' || steps.alpine.outputs.status == 'failure'
+        if: steps.nvd.outputs.status != 'success' || steps.bogus.outputs.status != 'success' || steps.alpine.outputs.status != 'success'
         run: exit 1
 
