@@ -187,15 +187,16 @@ func run() error {
 		return nil
 	}
 
-	log.Println("git commit")
-	if err = gc.Commit(utils.VulnListDir(), "./", commitMsg); err != nil {
-		return xerrors.Errorf("failed to git commit: %w", err)
-	}
-
-	log.Println("git push")
-	if err = gc.Push(utils.VulnListDir(), "master"); err != nil {
-		return xerrors.Errorf("failed to git push: %w", err)
-	}
+	fmt.Println(commitMsg)
+	//log.Println("git commit")
+	//if err = gc.Commit(utils.VulnListDir(), "./", commitMsg); err != nil {
+	//	return xerrors.Errorf("failed to git commit: %w", err)
+	//}
+	//
+	//log.Println("git push")
+	//if err = gc.Push(utils.VulnListDir(), "master"); err != nil {
+	//	return xerrors.Errorf("failed to git push: %w", err)
+	//}
 
 	return nil
 }
