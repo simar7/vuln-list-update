@@ -9,7 +9,6 @@ jobs:
   update:
     name: Update repo vuln-list
     runs-on: ubuntu-latest
-    continue-on-error: true
     env:
       GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
     steps:
@@ -48,7 +47,32 @@ jobs:
         run: ./vuln-list-update -target alpine
         continue-on-error: true
 
-      - name: Check on failures
+#      - name: Check for failures and Send a message to Microsoft Teams
+#        uses: aliencube/microsoft-teams-actions@v0.8.0
+#        if: steps.nvd.outputs.status != 'success' || steps.bogus.outputs.status != 'success' || steps.alpine.outputs.status != 'success'
+#        with:
+#          webhook_uri: ${{ secrets.AQUA_TEAMS_WEBHOOK }}
+#          title: <Message Title>
+#          summary: vuln-list-update failed
+#          text: One or more vendor advisory updates have failed. Check https://github.com/aquasecurity/vuln-list-update/actions?query=is%3Afailure+event%3Aschedule for details.
+#          theme_color: EE204D
+
+      - name: Check for failures and Send a message to Microsoft Teams
+        uses: luisghz/simple-ms-teams-webhook-notifier@v1-latest
+        if: steps.nvd.outputs.status != 'success' || steps.bogus.outputs.status != 'success' || steps.alpine.outputs.status != 'success'
+        with:
+          webhook_url: ${{ secrets.AQUA_TEAMS_WEBHOOK }}
+          summary: 'vuln-list-update failed'
+          title: 'vuln-list-update'
+          text: 'One or more vendor advisory updates have failed. Check link for details.'
+          theme-color: 'Error'
+          potential-action: |
+                  - "@type": "OpenUri"
+                    name: "View Failures"
+                    targets:
+                          - os: "default"
+                            uri: "https://github.com/aquasecurity/vuln-list-update/actions?query=is%3Afailure+event%3Aschedule"
+
+      - name: Check for failures and Fail the build
         if: steps.nvd.outputs.status != 'success' || steps.bogus.outputs.status != 'success' || steps.alpine.outputs.status != 'success'
         run: exit 1
-
